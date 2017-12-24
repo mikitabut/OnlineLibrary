@@ -1,0 +1,20 @@
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">
+        Author name
+      </th>
+      <th scope="col">
+        Author lastName
+      </th>
+    </tr>
+  </thead>
+  <tr *ngFor="let book of books">
+      <th scope="col">
+          {{book.author.name}}
+      </th>
+      <th scope="col">
+          {{book.author.lastName}}
+      </th>
+    </tr>
+</table>
