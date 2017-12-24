@@ -1,0 +1,25 @@
+{
+    "editor.insertSpaces": true,
+    "files.eol": "\n",
+    "search.exclude": {
+        ".vscode": true,
+        "dist": true,
+        "node_modules": true,
+        "aot": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "all",
+    "prettier.typescriptEnable": ["typescript"],
+    "prettier.useTabs": false,
+    "prettier.tabWidth": 4,
+    "prettier.printWidth": 120,
+    "prettier.cssEnable": ["sass", "css"],
+    "editor.formatOnSave": true,
+    "html.format.enable": false,
+    "editor.formatOnPaste": false,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "typescript.check.tscVersion": false
+
+}
