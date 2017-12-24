@@ -1,0 +1,44 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "name": "Fable",
+      "author": {
+        "name": "Georgii",
+        "lastName": "Dostoevsky",
+        "bio": "(EMPTY)"
+      },
+      "description": "(Empty)"
+    },
+    {
+      "id": 2,
+      "name": "Risen",
+      "author": {
+        "name": "Vladimir",
+        "lastName": "Visockii",
+        "bio": "Great man"
+      },
+      "description": "BIGBIGBIGBIGBIGBIGBIGBIGBIGBIGBIG"
+    },
+    {
+      "id": 3,
+      "name": "Control",
+      "author": {
+        "name": "Viktor",
+        "lastName": "Interesnii",
+        "bio": "(EMPTY)"
+      },
+      "description": "BIGBIGBIGBIGBIGBIGBIGBIGBIGBIGBIG"
+    },
+    {
+      "id": 4,
+      "name": "Conflict",
+      "author": {
+        "name": "Afonasii",
+        "lastName": "Zhuk",
+        "bio": "(EMPTY)"
+      },
+      "description": "BIGBIGBIGBIGBIGBIGBIGBIGBIGBIGBIG"
+    }
+  ]
+}

@@ -2,19 +2,37 @@
   <thead>
     <tr>
       <th scope="col">
+        Book name
+      </th>
+      <th scope="col">
         Author name
       </th>
       <th scope="col">
         Author lastName
       </th>
+      <th scope="col">
+        Author biography
+      </th>
+      <th scope="col">
+        Simple part of book
+      </th>
     </tr>
   </thead>
   <tr *ngFor="let book of books">
+      <th scope="col">
+          {{book.name}}
+      </th>
       <th scope="col">
           {{book.author.name}}
       </th>
       <th scope="col">
           {{book.author.lastName}}
+      </th>
+      <th scope="col">
+          {{book.author.bio}}
+      </th>
+      <th scope="col">
+          {{book.simplePart}}
       </th>
     </tr>
 </table>
