@@ -1,0 +1,26 @@
+<div class="container">
+    <h1>Add new book</h1>
+    <form (ngSubmit)="onSubmit()" #heroForm="ngForm" onchange="">
+        <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" class="form-control" id="title" required [(ngModel)]="name" name="bookName">
+        </div>
+        <div class="form-group">
+            <label for="bookDescription">Book description</label>
+            <input type="text" class="form-control" id="bookDescription" required [(ngModel)]="simplePart" name="description">
+        </div>
+        <div class="form-group">
+            <label for="authorName">Author name</label>
+            <input type="text" class="form-control" id="authorName" required [(ngModel)]="authorName" name="authorName">
+        </div>
+        <div class="form-group">
+            <label for="file">Upload file</label>
+            <input type="file" id="file" class="form-control-file" (change)="onFileChange($event)" (ngModel)="file" required accept=".pdf,.doc,.docx" name="file">
+        </div>
+
+
+        <button type="submit" *ngIf="!canSubmitted()" class="btn btn-danger" disabled="true">Submit</button>
+        <button type="submit" *ngIf="canSubmitted()" class="btn btn-success">Submit</button>
+
+    </form>
+</div>

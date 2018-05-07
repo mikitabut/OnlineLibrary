@@ -1,0 +1,16 @@
+<mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="bookName">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let book"> {{book.name}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="authorName">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let book"> {{book.author.name}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let book"> {{book.description}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+    <mat-row *matRowDef="let books; columns: columnsToDisplay"></mat-row>
+</mat-table>

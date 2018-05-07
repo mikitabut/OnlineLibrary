@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Book } from './book';
 
 @NgModule({
-  imports: [CommonModule],
   declarations: [],
+  imports: [CommonModule],
 })
 export class EntitiesModule {}

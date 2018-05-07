@@ -1,26 +1,24 @@
 import { EMPTY, EMPTY_AGE } from './constants';
 
 export class Book {
-  private id: number;
-  private name: string;
-  private author: Author;
-  private simplePart: string;
+    public id: number;
+    public name: string;
+    public author: Author;
+    public description: string;
+    public file: File;
 
-  constructor({ id, name, author, description }) {
-    this.id = id;
-    this.name = name;
-    this.author = author || new Author(EMPTY, EMPTY, EMPTY);
-    this.simplePart = description || EMPTY;
-  }
+    constructor({ id, name, authorName, description, file }) {
+        this.id = id;
+        this.name = name;
+        this.author = new Author(authorName);
+        this.description = description || EMPTY;
+        this.file = file;
+    }
 }
 
 export class Author {
-  private name: string;
-  private lastName: string;
-  private bio: string;
-  constructor(name: string, lastName: string, bio: string) {
-    this.name = name;
-    this.lastName = lastName;
-    this.bio = bio;
-  }
+    public name: string;
+    constructor(name: string) {
+        this.name = name;
+    }
 }
