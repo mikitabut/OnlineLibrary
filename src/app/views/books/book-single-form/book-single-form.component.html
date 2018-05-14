@@ -1,0 +1,48 @@
+<div class="page">
+    <header>
+        <mat-grid-list cols="2" rowHeight="1:1.2">
+            <mat-grid-tile>
+                <mat-card>
+                    <h4>{{name}}</h4>
+                    <form #heroForm="ngForm" class="form" (ngSubmit)="onSubmit()">
+                        <div>
+                            <div>
+                                <mat-form-field appearance="standart" class="input">
+                                    <mat-label>Title</mat-label>
+                                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" (disabled)="!hasPermissions">
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field appearance="standart" class="input">
+                                    <mat-label>Book description</mat-label>
+                                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" (disabled)="!hasPermissions"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field appearance="standart" class="input">
+                                    <mat-label>Author name</mat-label>
+                                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" (disabled)="!hasPermissions">
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <button mat-raised-button type="submit" *ngIf="hasPermissions">Change</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-card>
+                    <div class="pdf-buttons">
+                        <button mat-raised-button type="button" (click)="prevPage()"><i class="material-icons" md-36>arrow_back</i></button>
+                        <button mat-raised-button type="button" (click)="nextPage()"><i class="material-icons">arrow_forward</i></button>
+                    </div>
+                    <canvas #canvasPdf style="border:1px solid black;"></canvas>
+                </mat-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+    </header>
+</div>

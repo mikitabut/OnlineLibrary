@@ -41,6 +41,10 @@ export class BookFormComponent {
                     name: this.name,
                 }),
             );
+            this.authorName = '';
+            this.simplePart = '';
+            this.file = undefined;
+            this.name = '';
         } else {
             this.snackBar.open('You shoul set all fields!', 'OK');
         }

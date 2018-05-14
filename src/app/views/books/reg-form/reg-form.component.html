@@ -1,0 +1,20 @@
+<div class="container">
+    <h4>Sign up</h4>
+    <form (ngSubmit)="onSubmitRegister()" id="regForm">
+        <div class="form-group">
+            <p>
+                <mat-form-field appearance="standart">
+                    <mat-label>Username</mat-label>
+                    <input matInput placeholder="Your awesome username" required [(ngModel)]="usernameReg" name="usernameReg">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field appearance="standart">
+                    <mat-label>Password</mat-label>
+                    <input type="password" matInput placeholder="Cryptonit" required [(ngModel)]="passwordReg" name="passwordReg">
+                </mat-form-field>
+            </p>
+        </div>
+        <button mat-raised-button type="submit" (disabled)="(passwordReg && usernameReg)?false:true">Submit</button>
+    </form>
+</div>

@@ -1,0 +1,26 @@
+<mat-drawer-container hasBackdrop="true" class="page">
+    <mat-toolbar>
+        <button mat-raised-button type="button" (click)="drawer.toggle(); getUserBooks()">{{username}}</button>
+        <div class="empty"></div>
+        <button mat-raised-button type="button" routerLink="/">
+            <i class="material-icons">home</i>
+        </button>
+    </mat-toolbar>
+    <mat-drawer #drawer mode="over" class="left-drawer">
+        <mat-card>
+            <mat-card-title *ngIf="username">
+                Hello {{username}}
+            </mat-card-title>
+            <h3>
+                <mat-label>Your books</mat-label>
+            </h3>
+            <div *ngFor="let book of books; last as last">
+                <a routerLink="/{{book.name}}">{{book.name}}</a>
+                <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+            </div>
+        </mat-card>
+        <button mat-raised-button class="logout-button" type="button" (click)="logout()">Logout</button>
+
+    </mat-drawer>
+    <ng-content></ng-content>
+</mat-drawer-container>

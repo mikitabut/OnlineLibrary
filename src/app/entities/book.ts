@@ -1,16 +1,16 @@
 import { EMPTY, EMPTY_AGE } from './constants';
 
 export class Book {
-    public id: number;
+    public id: string;
     public name: string;
-    public author: Author;
+    public authorName: string;
     public description: string;
     public file: File;
 
     constructor({ id, name, authorName, description, file }) {
         this.id = id;
         this.name = name;
-        this.author = new Author(authorName);
+        this.authorName = authorName;
         this.description = description || EMPTY;
         this.file = file;
     }

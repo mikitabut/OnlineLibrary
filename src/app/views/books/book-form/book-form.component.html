@@ -1,26 +1,36 @@
 <div class="container">
-    <h1>Add new book</h1>
-    <form (ngSubmit)="onSubmit()" #heroForm="ngForm" onchange="">
-        <div class="form-group">
-            <label for="name">Title</label>
-            <input type="text" class="form-control" id="title" required [(ngModel)]="name" name="bookName">
-        </div>
-        <div class="form-group">
-            <label for="bookDescription">Book description</label>
-            <input type="text" class="form-control" id="bookDescription" required [(ngModel)]="simplePart" name="description">
-        </div>
-        <div class="form-group">
-            <label for="authorName">Author name</label>
-            <input type="text" class="form-control" id="authorName" required [(ngModel)]="authorName" name="authorName">
-        </div>
-        <div class="form-group">
-            <label for="file">Upload file</label>
-            <input type="file" id="file" class="form-control-file" (change)="onFileChange($event)" (ngModel)="file" required accept=".pdf,.doc,.docx" name="file">
+    <h4>Add new book</h4>
+    <form (ngSubmit)="onSubmit()" #heroForm="ngForm" class="form">
+        <div>
+            <div>
+                <mat-form-field appearance="standart">
+                    <mat-label>Title</mat-label>
+                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title">
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field appearance="standart">
+                    <mat-label>Book description</mat-label>
+                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field appearance="standart">
+                    <mat-label>Author name</mat-label>
+                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName">
+                </mat-form-field>
+            </div>
+            <div>
+                <button mat-raised-button type="button" (click)="fileInput.click()">Choose book file</button>
+                <mat-label *ngIf="this.file">{{this.file.name}}</mat-label>
+                <input hidden type="file" #fileInput (change)="onFileChange($event)" name="file" accept=" .pdf" />
+            </div>
+
         </div>
 
-
-        <button type="submit" *ngIf="!canSubmitted()" class="btn btn-danger" disabled="true">Submit</button>
-        <button type="submit" *ngIf="canSubmitted()" class="btn btn-success">Submit</button>
-
+        <div>
+            <button mat-raised-button type="submit" *ngIf="!canSubmitted()" disabled="true">Submit</button>
+            <button mat-raised-button type="submit" *ngIf="canSubmitted()">Submit</button>
+        </div>
     </form>
 </div>
