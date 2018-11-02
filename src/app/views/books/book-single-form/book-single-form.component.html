@@ -1,8 +1,8 @@
 <div class="page">
     <header>
-        <mat-grid-list cols="2" rowHeight="1:1.2">
+        <mat-grid-list cols="2" rowHeight="55rem" class="books-page">
             <mat-grid-tile>
-                <mat-card>
+                <mat-card class="card">
                     <h4>{{name}}</h4>
                     <form #heroForm="ngForm" class="form" (ngSubmit)="onSubmit()">
                         <div>
@@ -34,7 +34,7 @@
                 </mat-card>
             </mat-grid-tile>
             <mat-grid-tile>
-                <mat-card>
+                <mat-card class="card">
                     <div class="pdf-buttons">
                         <button mat-raised-button type="button" (click)="prevPage()"><i class="material-icons" md-36>arrow_back</i></button>
                         <button mat-raised-button type="button" (click)="nextPage()"><i class="material-icons">arrow_forward</i></button>

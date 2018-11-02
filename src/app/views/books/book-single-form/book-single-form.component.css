@@ -1,5 +1,5 @@
 .input {
-    min-width: 25rem;
+    min-width: 20rem;
 }
 
 .form {
@@ -17,4 +17,16 @@
 
 .pdf-button {
     width: 3rem;
+}
+
+.card {
+    min-height: 20rem;
+    max-height: 60rem;
+    min-width: 25rem;
+    margin: 1rem;
+}
+
+.books-page {
+    min-width: 50rem;
+    overflow: auto;
 }
