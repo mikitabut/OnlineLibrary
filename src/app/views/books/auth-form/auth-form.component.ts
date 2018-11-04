@@ -6,6 +6,7 @@ import { BooksService } from '../books.service';
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
 import { User } from '../../../services/authService';
+import { RSAService } from '../../../services/RSAService';
 
 @Component({
     selector: 'auth-form',
@@ -13,11 +14,16 @@ import { User } from '../../../services/authService';
     templateUrl: './auth-form.component.html',
 })
 export class AuthFormComponent {
-    @Output() authEmitter: EventEmitter<User> = new EventEmitter<User>();
+    @Output()
+    authEmitter: EventEmitter<User> = new EventEmitter<User>();
     public usernameAuth: string;
     public passwordAuth: string;
 
-    constructor(private bookService: BooksService, private snackBar: MatSnackBar) {}
+    constructor(
+        private bookService: BooksService,
+        private snackBar: MatSnackBar,
+        private rsaGenerator: RSAService,
+    ) {}
 
     onSubmitAuth() {
         if (this.canSignIn()) {
@@ -26,6 +32,7 @@ export class AuthFormComponent {
                 username: this.usernameAuth,
             } as User);
         } else {
+            this.rsaGenerator.generateKey();
             this.snackBar.open('You should set all fields!', 'OK');
         }
     }
