@@ -8,11 +8,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BooksModule } from './views/books/books.module';
 import { RSAService } from './services/RSAService';
 import { SimpleNumberService } from './services/SimpleNumberGenerator';
+import { CipherService } from './views/rsaTest/services/cipherService';
+import { CipherComponent } from './views/rsaTest/CipherComponent/cipher.component';
 
 @NgModule({
     bootstrap: [AppComponent],
-    declarations: [AppComponent],
+    declarations: [AppComponent, CipherComponent],
     imports: [BrowserModule, NgbModule.forRoot(), BrowserAnimationsModule, BooksModule],
-    providers: [RSAService, SimpleNumberService],
+    providers: [RSAService, SimpleNumberService, CipherService],
 })
 export class AppModule {}

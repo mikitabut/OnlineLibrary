@@ -4,16 +4,11 @@ import Decimal from 'decimal.js';
 
 @Injectable()
 export class RSAService {
-    private e;
-    private n;
-    private d;
-    private phi;
-
     constructor(private numberGenerator: SimpleNumberService) {}
 
-    generateKey() {
-        const p = this.numberGenerator.generate(128);
-        const q = this.numberGenerator.generate(128);
+    private generateKey(bits: number) {
+        const p = this.numberGenerator.generate(bits);
+        const q = this.numberGenerator.generate(bits);
         const n = p.times(q);
         const phi = p.minus(1).times(q.minus(1));
         let e = new Decimal(65537);
@@ -28,6 +23,8 @@ export class RSAService {
         // Open and closed key
         const openKey = { e, n };
         const closedKey = { d, phi };
+
+        return { openKey, closedKey };
     }
 
     private biggerEvklid(a: Decimal, b: Decimal): { d: Decimal; x1: Decimal; y1: Decimal } {
@@ -42,5 +39,20 @@ export class RSAService {
         x = y1.minus(b.divToInt(a).times(x1));
         y = x1;
         return { d, x1: x, y1: y };
+    }
+
+    getKeys() {
+        let publicKey = JSON.parse(localStorage.getItem('rsaPublicKey'));
+        let privateKey = JSON.parse(localStorage.getItem('rsaPrivateKey'));
+        if (publicKey == null || privateKey == null) {
+            const { openKey, closedKey } = this.generateKey(1024);
+
+            publicKey = JSON.stringify(openKey);
+            privateKey = JSON.stringify(closedKey);
+            localStorage.setItem('rsaPublicKey', publicKey);
+            localStorage.setItem('rsaPrivateKey', privateKey);
+        }
+
+        return { publicKey, privateKey };
     }
 }

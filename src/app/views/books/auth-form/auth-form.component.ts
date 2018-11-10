@@ -1,11 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Book } from '../../../entities/book';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ObserveOnOperator } from 'rxjs/operators/observeOn';
-import { BooksService } from '../books.service';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs';
 import { User } from '../../../services/authService';
+import Decimal from 'decimal.js';
 import { RSAService } from '../../../services/RSAService';
 
 @Component({
@@ -19,11 +15,7 @@ export class AuthFormComponent {
     public usernameAuth: string;
     public passwordAuth: string;
 
-    constructor(
-        private bookService: BooksService,
-        private snackBar: MatSnackBar,
-        private rsaGenerator: RSAService,
-    ) {}
+    constructor(private snackBar: MatSnackBar, private serv: RSAService) {}
 
     onSubmitAuth() {
         if (this.canSignIn()) {
@@ -32,7 +24,7 @@ export class AuthFormComponent {
                 username: this.usernameAuth,
             } as User);
         } else {
-            this.rsaGenerator.generateKey();
+            console.log(this.serv.getKeys());
             this.snackBar.open('You should set all fields!', 'OK');
         }
     }

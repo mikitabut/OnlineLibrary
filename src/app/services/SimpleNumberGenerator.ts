@@ -72,6 +72,7 @@ export class SimpleNumberService {
         for (let i = 1; i < countOfBits; i++) {
             bytes.setBit(i, Math.round(Math.random()) as 0 | 1);
         }
+
         bytes.setBit(0, 1);
         // Second step
         let dec = new Decimal('0b' + bytes.toString());
@@ -96,7 +97,7 @@ export class SimpleNumberService {
         const { s, t } = this.get2STProperties(testedNumber.minus(1));
 
         // Cycle A
-        for (let i = 0; i < bits; i++) {
+        for (let i = 0; i < 64; i++) {
             const a = Decimal.round(
                 Decimal.random()
                     .times(testedNumber.minus(2))
