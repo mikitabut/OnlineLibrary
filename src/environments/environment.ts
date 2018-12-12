@@ -5,6 +5,6 @@
 
 export const environment = {
     // URL of development API
-    apiUrl: 'http://localhost:3000',
+    apiUrl: 'http://local.course-project.com:3000/api',
     production: false,
 };

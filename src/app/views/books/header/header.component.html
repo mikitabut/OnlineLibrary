@@ -1,14 +1,14 @@
 <mat-drawer-container hasBackdrop="true" class="page">
     <mat-toolbar>
-        <button mat-raised-button type="button" (click)="drawer.toggle(); getUserBooks()">{{username}}</button>
+        <button mat-raised-button type="button" *ngIf="username" (click)="getUserBooks(); toggle();">{{username}}</button>
         <div class="empty"></div>
         <button mat-raised-button type="button" routerLink="/">
             <i class="material-icons">home</i>
         </button>
     </mat-toolbar>
-    <mat-drawer #drawer mode="over" class="left-drawer">
+    <mat-drawer #drawer mode="over" class="left-drawer" *ngIf="username">
         <mat-card>
-            <mat-card-title *ngIf="username">
+            <mat-card-title>
                 Hello {{username}}
             </mat-card-title>
             <h3>
@@ -19,8 +19,10 @@
                 <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
             </div>
         </mat-card>
+
         <button mat-raised-button class="logout-button" type="button" (click)="logout()">Logout</button>
 
+        <div *ngIf="!userVkId" id="vk_auth"></div>
     </mat-drawer>
     <ng-content></ng-content>
 </mat-drawer-container>

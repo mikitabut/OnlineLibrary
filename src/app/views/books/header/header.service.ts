@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
-import { RequestOptions, Headers, Http } from '@angular/http';
 import { AuthenticationService } from '../../../services/authService';
 import { BooksService } from '../books.service';
 

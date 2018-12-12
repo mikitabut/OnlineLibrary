@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
+import { Injectable, Inject } from '@angular/core';
+import { Http, Response } from '@angular/http';
 import { Observable, Subject } from 'rxjs';
-import * as bcryptjs from 'bcryptjs';
+import { DOCUMENT } from '@angular/common';
+
 import { environment } from '../../environments/environment';
-import { Book } from '../entities/book';
+import { vkLoginRedirectUrl } from '../entities/constants';
 
 const API_URL = environment.apiUrl;
 
@@ -17,7 +18,7 @@ export class AuthenticationService {
     public token: string;
     public username: Subject<string>;
 
-    constructor(private http: Http) {
+    constructor(private http: Http, @Inject(DOCUMENT) private doc) {
         // set token if saved in local storage
         this.username = new Subject();
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -31,13 +32,17 @@ export class AuthenticationService {
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
                 const token = response.json() && response.json().data.jwtToken;
+                const userVkId = response.json() && response.json().data.userVkId;
                 if (token) {
                     // set token property
                     this.token = token;
                     this.username.next(username);
 
                     // store username and jwt token in local storage to keep user logged in between page refreshes
-                    sessionStorage.setItem('currentUser', JSON.stringify({ username, token }));
+                    sessionStorage.setItem(
+                        'currentUser',
+                        JSON.stringify({ username, token, userVkId }),
+                    );
 
                     // return true to indicate successful login
                     return true;
@@ -53,13 +58,17 @@ export class AuthenticationService {
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
                 const token = response.json() && response.json().data.jwtToken;
+                const userVkId = response.json() && response.json().data.userVkId;
                 if (token) {
                     // set token property
                     this.token = token;
                     this.username.next(username);
 
                     // store username and jwt token in local storage to keep user logged in between page refreshes
-                    sessionStorage.setItem('currentUser', JSON.stringify({ username, token }));
+                    sessionStorage.setItem(
+                        'currentUser',
+                        JSON.stringify({ username, token, userVkId: null }),
+                    );
 
                     return true;
                 } else {
@@ -73,6 +82,20 @@ export class AuthenticationService {
         this.token = null;
         sessionStorage.removeItem('currentUser');
         this.username.next(undefined);
+    }
+
+    updateUserVkId(userVkId: string) {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+        return this.http
+            .post(API_URL + '/auth/update-vk-id', { username: currentUser.username, userVkId })
+            .map((response: Response) => {
+                return response.ok;
+            });
+    }
+
+    redirectToVkLogin() {
+        this.doc.location.href = vkLoginRedirectUrl;
     }
 
     public getLogged() {
