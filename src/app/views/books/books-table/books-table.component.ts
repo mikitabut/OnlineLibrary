@@ -20,10 +20,12 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 })
 export class BooksTableComponent implements OnChanges {
     @Input() books: Book[];
+    @Input() recommendedBooks: Book[];
     @Input() searchSubject: Subject<{ phrase: string; byWord?: boolean }>;
     wordSearch: boolean = false;
     dataSource: BooksDataSource;
     columnsToDisplay = ['bookName', 'authorName', 'description'];
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.books) {
             this.dataSource.update(this.books);

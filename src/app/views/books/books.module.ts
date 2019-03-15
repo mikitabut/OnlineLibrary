@@ -4,26 +4,19 @@ import { BooksComponent } from './book-view/books.component';
 import { BooksService } from './books.service';
 import { EntitiesModule } from '../../entities/entities.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Http, HttpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { BookFormComponent } from './book-form/book-form.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import {
     MatTableModule,
     MatSnackBarModule,
-    MatPaginatorModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
-    matFormFieldAnimations,
     MatButtonModule,
     MatGridListModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
     MatToolbarModule,
-    MatDrawer,
-    MatDrawerContainer,
     MatSidenavModule,
     MatCardModule,
     MatDividerModule,
@@ -38,10 +31,11 @@ import { BookViewComponent } from './book-single-form/book-single-form.component
 import { NotFoundComponent } from './not-found/not-found.component';
 import { Routes, RouterModule } from '@angular/router';
 import { BooksMainComponent } from './books.component';
-import { PDFJS } from 'pdfjs-dist';
+import { VkAuthComponent } from '../vk-auth/vk-auth.component';
 
 const appRoutes: Routes = [
     { path: '', component: BooksComponent },
+    { path: 'auth-vk', component: VkAuthComponent },
     { path: ':name', component: BookViewComponent },
     { path: '**', component: NotFoundComponent },
 ];

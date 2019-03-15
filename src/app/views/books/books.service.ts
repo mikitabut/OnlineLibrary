@@ -24,6 +24,15 @@ export class BooksService {
             })
             .catch(this.handleError);
     }
+    public getRecommendedBooks(username: string): Observable<Book[]> {
+        return this.http
+            .post(API_URL + '/books/recommended', { username })
+            .map(response => {
+                const books = response.json().books;
+                return books.map(bookData => new Book({ ...bookData.book, id: bookData._id }));
+            })
+            .catch(this.handleError);
+    }
     public getBookByName(name: string): Observable<Book> {
         return this.http
             .get(API_URL + '/books/' + name)
