@@ -1,5 +1,11 @@
 <div>
     <div>
+        <div>
+            <div *ngIf="recommendedBooks">Recommended Books: </div>
+            <div *ngFor="let recBook of recommendedBooks">
+                <a  [href]="recBook.name">{{recBook.name}}</a>
+            </div>
+        </div>
         <mat-slide-toggle color="primary" class="toggle" (input)="onToggleChange($event.target.checked)">Word search</mat-slide-toggle>
         <mat-form-field appearance="standart">
             <mat-label>Search book</mat-label>

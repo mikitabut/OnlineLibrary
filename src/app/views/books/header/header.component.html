@@ -22,7 +22,9 @@
 
         <button mat-raised-button class="logout-button" type="button" (click)="logout()">Logout</button>
 
-        <div *ngIf="!userVkId" id="vk_auth"></div>
+        <div class="vk-container">
+            <div id="vk_auth" class="vk-content"></div>
+        </div>
     </mat-drawer>
     <ng-content></ng-content>
 </mat-drawer-container>

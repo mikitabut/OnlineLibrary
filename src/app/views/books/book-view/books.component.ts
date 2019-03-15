@@ -13,12 +13,14 @@ import { ErrorCode } from '../../../entities/error';
 })
 export class BooksComponent implements OnInit {
     bookStartInserted: boolean;
-    public books?: Book[];
-    public userBooks?: Book[];
-    public searchSubject: Subject<{ phrase: string; byWord: boolean }>;
-    public usernameSubscription: Subscription;
-    public username: string;
+    books?: Book[];
+    userBooks?: Book[];
+    searchSubject: Subject<{ phrase: string; byWord: boolean }>;
+    usernameSubscription: Subscription;
+    username: string;
     columnsToDisplay = ['bookName', 'authorName', 'description'];
+    recommendedBooks: Observable<Book[]>;
+
     constructor(
         private booksService: BooksService,
         private snackBar: MatSnackBar,
@@ -31,6 +33,7 @@ export class BooksComponent implements OnInit {
         this.username = this.authService.getLogged()
             ? this.authService.getLogged().username
             : undefined;
+        this.recommendedBooks = this.booksService.getRecommendedBooks(this.username);
     }
 
     ngOnInit() {
@@ -64,6 +67,7 @@ export class BooksComponent implements OnInit {
                 this.books = books;
                 this.snackBar.open('Book was inserted successfully', 'OK');
                 this.bookStartInserted = false;
+                this.recommendedBooks = this.booksService.getRecommendedBooks(this.username);
             },
             error => {
                 if (error.status === ErrorCode.NotAuthorized) {

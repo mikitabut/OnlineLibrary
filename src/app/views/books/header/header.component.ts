@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
     books: Book[];
     username: string;
     usernameSubscr: Subscription;
-    userVkId: string;
+    userVkIdExist: boolean;
 
     @ViewChild('drawer') drawer;
 
@@ -24,9 +24,9 @@ export class HeaderComponent implements OnInit {
         this.username = this.authService.getLogged()
             ? this.authService.getLogged().username
             : undefined;
-        this.userVkId = this.authService.getLogged()
-            ? this.authService.getLogged().userVkId
-            : undefined;
+        this.userVkIdExist = this.authService.getLogged()
+            ? !!this.authService.getLogged().userVkId
+            : false;
 
         VK.init({ apiId: 6780881 });
     }
@@ -50,6 +50,9 @@ export class HeaderComponent implements OnInit {
     }
 
     toggle() {
+        this.userVkIdExist = this.authService.getLogged()
+            ? !!this.authService.getLogged().userVkId
+            : false;
         if (this.username) {
             this.drawer.toggle();
         }

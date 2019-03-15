@@ -17,7 +17,7 @@
             <mat-grid-tile>
                 <mat-card class="card">
                     <mat-progress-spinner mode="indeterminate " *ngIf="!books "></mat-progress-spinner>
-                    <books-table *ngIf="books " [books]="books " [searchSubject]="searchSubject " class="container"></books-table>
+                    <books-table *ngIf="books " [books]="books" [recommendedBooks]="recommendedBooks|async" [searchSubject]="searchSubject " class="container"></books-table>
                 </mat-card>
             </mat-grid-tile>
         </mat-grid-list>
