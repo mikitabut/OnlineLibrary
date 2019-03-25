@@ -1,22 +1,16 @@
 import {
     Component,
-    OnInit,
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
     ViewChild,
     ElementRef,
-    AfterViewInit,
 } from '@angular/core';
 import { Book } from '../../../entities/book';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ObserveOnOperator } from 'rxjs/operators/observeOn';
 import { BooksService } from '../books.service';
 import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../../services/authService';
-import { HeaderService } from '../header/header.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.Default,
@@ -44,9 +38,7 @@ export class BookViewComponent {
         private bookService: BooksService,
         private snackBar: MatSnackBar,
         private authService: AuthenticationService,
-        private header: HeaderService,
         private activateRoute: ActivatedRoute,
-        private router: Router,
     ) {
         this.activateRoute.params.subscribe(params => {
             this.pageBookName = params['name'];
@@ -65,7 +57,7 @@ export class BookViewComponent {
                     );
                 },
                 error => {
-                    this.snackBar.open(error.status + ':' + error.json().data, 'OK');
+                    this.snackBar.open(error.status + ':' + error.data, 'OK');
                 },
             );
         });
@@ -110,7 +102,7 @@ export class BookViewComponent {
                         this.simplePart = book.description;
                         this.snackBar.open('Book was changed successfully', 'OK');
                     },
-                    error => this.snackBar.open(error.status + ':' + error.json().data, 'OK'),
+                    error => this.snackBar.open(error.status + ':' + error.data, 'OK'),
                 );
         } else {
             this.snackBar.open('You should set all fields!', 'OK');

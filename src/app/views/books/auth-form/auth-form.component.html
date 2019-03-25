@@ -3,13 +3,13 @@
     <form (ngSubmit)="onSubmitAuth()" id="authForm">
         <div class="form-group">
             <p>
-                <mat-form-field appearance="standart">
+                <mat-form-field>
                     <mat-label>Username</mat-label>
                     <input matInput placeholder="Your awesome username" required [(ngModel)]="usernameAuth" name="username">
                 </mat-form-field>
             </p>
             <p>
-                <mat-form-field appearance="standart">
+                <mat-form-field>
                     <mat-label>Password</mat-label>
                     <input type="password" matInput placeholder="Cryptonit" required [(ngModel)]="passwordAuth" name="password">
                 </mat-form-field>

@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Rx';
+import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../../../services/authService';
 import { BooksService } from '../books.service';
@@ -11,7 +11,7 @@ export class HeaderService {
         if (!!this.authService.getLogged()) {
             return this.bookService.getBooksByUsername(username, this.authService.token);
         } else {
-            return Observable.of([]);
+            return of([]);
         }
     }
 }

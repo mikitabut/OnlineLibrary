@@ -11,7 +11,7 @@ import { VkAuthComponent } from './views/vk-auth/vk-auth.component';
 @NgModule({
     bootstrap: [AppComponent],
     declarations: [AppComponent, VkAuthComponent],
-    imports: [BrowserModule, NgbModule.forRoot(), BrowserAnimationsModule, BooksModule],
+    imports: [BrowserModule, NgbModule, BrowserAnimationsModule, BooksModule],
     providers: [],
 })
 export class AppModule {}

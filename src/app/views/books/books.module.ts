@@ -4,7 +4,6 @@ import { BooksComponent } from './book-view/books.component';
 import { BooksService } from './books.service';
 import { EntitiesModule } from '../../entities/entities.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpModule } from '@angular/http';
 import { BookFormComponent } from './book-form/book-form.component';
 import { FormsModule } from '@angular/forms';
 import {
@@ -32,6 +31,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { Routes, RouterModule } from '@angular/router';
 import { BooksMainComponent } from './books.component';
 import { VkAuthComponent } from '../vk-auth/vk-auth.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const appRoutes: Routes = [
     { path: '', component: BooksComponent },
@@ -56,7 +56,7 @@ const appRoutes: Routes = [
         CommonModule,
         EntitiesModule,
         NgbModule,
-        HttpModule,
+        HttpClientModule,
         FormsModule,
         MatTableModule,
         MatSnackBarModule,

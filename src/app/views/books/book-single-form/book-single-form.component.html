@@ -7,19 +7,19 @@
                     <form #heroForm="ngForm" class="form" (ngSubmit)="onSubmit()">
                         <div>
                             <div>
-                                <mat-form-field appearance="standart" class="input">
+                                <mat-form-field class="input">
                                     <mat-label>Title</mat-label>
                                     <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" (disabled)="!hasPermissions">
                                 </mat-form-field>
                             </div>
                             <div>
-                                <mat-form-field appearance="standart" class="input">
+                                <mat-form-field class="input">
                                     <mat-label>Book description</mat-label>
                                     <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" (disabled)="!hasPermissions"></textarea>
                                 </mat-form-field>
                             </div>
                             <div>
-                                <mat-form-field appearance="standart" class="input">
+                                <mat-form-field class="input">
                                     <mat-label>Author name</mat-label>
                                     <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" (disabled)="!hasPermissions">
                                 </mat-form-field>

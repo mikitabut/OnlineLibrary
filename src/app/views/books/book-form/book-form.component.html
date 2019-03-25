@@ -3,19 +3,19 @@
     <form (ngSubmit)="onSubmit()" #heroForm="ngForm" class="form">
         <div>
             <div>
-                <mat-form-field appearance="standart">
+                <mat-form-field>
                     <mat-label>Title</mat-label>
                     <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title">
                 </mat-form-field>
             </div>
             <div>
-                <mat-form-field appearance="standart">
+                <mat-form-field>
                     <mat-label>Book description</mat-label>
                     <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description"></textarea>
                 </mat-form-field>
             </div>
             <div>
-                <mat-form-field appearance="standart">
+                <mat-form-field>
                     <mat-label>Author name</mat-label>
                     <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName">
                 </mat-form-field>
