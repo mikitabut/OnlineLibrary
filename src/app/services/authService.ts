@@ -1,10 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 
 import { environment } from '../../environments/environment';
 import { vkLoginRedirectUrl } from '../entities/constants';
+import { Subject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 const API_URL = environment.apiUrl;
 
@@ -18,7 +19,7 @@ export class AuthenticationService {
     public token: string;
     public username: Subject<string>;
 
-    constructor(private http: Http, @Inject(DOCUMENT) private doc) {
+    constructor(private http: HttpClient, @Inject(DOCUMENT) private doc) {
         // set token if saved in local storage
         this.username = new Subject();
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -29,36 +30,37 @@ export class AuthenticationService {
     login(username: string, password: string): Observable<boolean> {
         return this.http
             .post(API_URL + '/auth', { username: username.trim(), password: password.trim() })
-            .map((response: Response) => {
-                // login successful if there's a jwt token in the response
-                const token = response.json() && response.json().data.jwtToken;
-                const userVkId = response.json() && response.json().data.userVkId;
-                if (token) {
-                    // set token property
-                    this.token = token;
-                    this.username.next(username);
+            .pipe(
+                map((response: any) => {
+                    // login successful if there's a jwt token in the response
+                    const token = response && response.data.jwtToken;
+                    const userVkId = response && response.data.userVkId;
+                    if (token) {
+                        // set token property
+                        this.token = token;
+                        this.username.next(username);
 
-                    // store username and jwt token in local storage to keep user logged in between page refreshes
-                    sessionStorage.setItem(
-                        'currentUser',
-                        JSON.stringify({ username, token, userVkId }),
-                    );
+                        // store username and jwt token in local storage to keep user logged in between page refreshes
+                        sessionStorage.setItem(
+                            'currentUser',
+                            JSON.stringify({ username, token, userVkId }),
+                        );
 
-                    // return true to indicate successful login
-                    return true;
-                } else {
-                    // return false to indicate failed login
-                    return false;
-                }
-            });
+                        // return true to indicate successful login
+                        return true;
+                    } else {
+                        // return false to indicate failed login
+                        return false;
+                    }
+                }),
+            );
     }
     register(username: string, password: string): Observable<boolean> {
-        return this.http
-            .post(API_URL + '/auth/reg', { username, password })
-            .map((response: Response) => {
+        return this.http.post(API_URL + '/auth/reg', { username, password }).pipe(
+            map((response: any) => {
                 // login successful if there's a jwt token in the response
-                const token = response.json() && response.json().data.jwtToken;
-                const userVkId = response.json() && response.json().data.userVkId;
+                const token = response && response.data.jwtToken;
+                const userVkId = response && response.data.userVkId;
                 if (token) {
                     // set token property
                     this.token = token;
@@ -74,7 +76,8 @@ export class AuthenticationService {
                 } else {
                     return false;
                 }
-            });
+            }),
+        );
     }
 
     logout(): void {
@@ -89,9 +92,11 @@ export class AuthenticationService {
 
         return this.http
             .post(API_URL + '/auth/update-vk-id', { username: currentUser.username, userVkId })
-            .map((response: Response) => {
-                return response.ok;
-            });
+            .pipe(
+                map((response: any) => {
+                    return response.ok;
+                }),
+            );
     }
 
     redirectToVkLogin() {

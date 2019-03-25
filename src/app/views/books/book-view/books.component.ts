@@ -41,7 +41,13 @@ export class BooksComponent implements OnInit {
             books => {
                 this.books = books;
             },
-            error => this.snackBar.open(error.status + ':' + error.json().data, 'OK'),
+            error => {
+                debugger;
+                this.snackBar.open(
+                    error.data ? error.status + ':' + error.data : error.message,
+                    'OK',
+                );
+            },
         );
         this.searchSubject.subscribe(value => {
             if (value.phrase.length <= 2) {
@@ -73,7 +79,7 @@ export class BooksComponent implements OnInit {
                 if (error.status === ErrorCode.NotAuthorized) {
                     this.authService.logout();
                 }
-                this.snackBar.open(error.status + ':' + error.json().data, 'OK');
+                this.snackBar.open(error.status + ':' + error.data, 'OK');
             },
         );
     }
@@ -82,7 +88,7 @@ export class BooksComponent implements OnInit {
             () => {
                 this.snackBar.open('Hello ' + user.username + '!', 'OK');
             },
-            error => this.snackBar.open(error.status + ':' + error.json().data.statusText, 'OK'),
+            error => this.snackBar.open(error.status + ':' + error.data.statusText, 'OK'),
         );
     }
     onUserSignUp(user: User) {
@@ -90,7 +96,7 @@ export class BooksComponent implements OnInit {
             () => {
                 this.snackBar.open('User successfully created', 'OK');
             },
-            error => this.snackBar.open(error.status + ':' + error.json().data.statusText, 'OK'),
+            error => this.snackBar.open(error.status + ':' + error.data.statusText, 'OK'),
         );
     }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Book } from '../../../entities/book';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ObserveOnOperator } from 'rxjs/operators/observeOn';
 import { BooksService } from '../books.service';
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
