@@ -1,64 +1,37 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
-import { Book } from '../../../entities/book';
-import { Subscription } from 'rxjs';
-import { AuthenticationService } from '../../../services/authService';
-import { HeaderService } from './header.service';
+import { Component, ViewChild, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 
-declare var VK: any;
+import { Book } from '../../../entities/book';
+import * as UserActions from '../../../actions/user.actions';
+import { getUsername, getIsUserLoggedIn } from '../../../reducers/user.reducers';
+import { getManagedBooks } from '../../../reducers/books.reducers';
 
 @Component({
     selector: 'header',
     styleUrls: ['./header.component.css'],
     templateUrl: './header.component.html',
 })
-export class HeaderComponent implements OnInit {
-    books: Book[];
-    username: string;
-    usernameSubscr: Subscription;
-    userVkIdExist: boolean;
+export class HeaderComponent {
+    managedBooks: Observable<Book[]>;
+    username: Observable<string>;
+    isUserLoggedIn: Observable<boolean>;
 
     @ViewChild('drawer') drawer;
 
-    constructor(private headerService: HeaderService, private authService: AuthenticationService) {
-        this.usernameSubscr = this.authService.username.subscribe(value => (this.username = value));
-        this.username = this.authService.getLogged()
-            ? this.authService.getLogged().username
-            : undefined;
-        this.userVkIdExist = this.authService.getLogged()
-            ? !!this.authService.getLogged().userVkId
-            : false;
-
-        VK.init({ apiId: 6780881 });
-    }
-
-    ngOnInit() {
-        VK.Widgets.Auth('vk_auth', { authUrl: '/auth-vk/' });
+    constructor(private store: Store<any>) {
+        this.username = this.store.pipe(select(getUsername));
+        this.isUserLoggedIn = this.store.pipe(select(getIsUserLoggedIn));
+        this.managedBooks = this.store.pipe(select(getManagedBooks));
     }
 
     logout() {
-        this.books = [];
-        this.authService.logout();
-    }
-
-    getUserBooks() {
-        this.headerService.getBooksByUsername(this.username).subscribe(
-            books => (this.books = books),
-            error => {
-                this.authService.logout();
-            },
-        );
+        this.store.dispatch(new UserActions.Logout(null));
     }
 
     toggle() {
-        this.userVkIdExist = this.authService.getLogged()
-            ? !!this.authService.getLogged().userVkId
-            : false;
-        if (this.username) {
+        if (this.drawer) {
             this.drawer.toggle();
         }
-    }
-
-    regirectToVkLogin() {
-        this.authService.redirectToVkLogin();
     }
 }

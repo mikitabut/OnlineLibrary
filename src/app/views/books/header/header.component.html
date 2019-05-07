@@ -1,30 +1,30 @@
+<mat-toolbar>
+    <button mat-raised-button type="button" *ngIf="isUserLoggedIn|async" (click)="toggle();">{{username|async}}</button>
+    <div class="empty"></div>
+    <button mat-raised-button type="button" routerLink="/">
+        <i class="material-icons">home</i>
+    </button>
+</mat-toolbar>
 <mat-drawer-container hasBackdrop="true" class="page">
-    <mat-toolbar>
-        <button mat-raised-button type="button" *ngIf="username" (click)="getUserBooks(); toggle();">{{username}}</button>
-        <div class="empty"></div>
-        <button mat-raised-button type="button" routerLink="/">
-            <i class="material-icons">home</i>
-        </button>
-    </mat-toolbar>
-    <mat-drawer #drawer mode="over" class="left-drawer" *ngIf="username">
+    <mat-drawer #drawer mode="over" class="left-drawer" *ngIf="isUserLoggedIn|async">
         <mat-card>
             <mat-card-title>
-                Hello {{username}}
+                Hello {{username|async}}
             </mat-card-title>
-            <h3>
-                <mat-label>Your books</mat-label>
-            </h3>
-            <div *ngFor="let book of books; last as last">
-                <a routerLink="/{{book.name}}">{{book.name}}</a>
-                <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+            <div *ngIf="(managedBooks|async) as books">
+                <h3>
+                    <mat-label>Your books</mat-label>
+                </h3>
+                <div *ngFor="let book of books; last as last">
+                    <a routerLink="/{{book.name}}">{{book.name}}</a>
+                    <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                </div>
             </div>
         </mat-card>
 
         <button mat-raised-button class="logout-button" type="button" (click)="logout()">Logout</button>
 
-        <div class="vk-container">
-            <div id="vk_auth" class="vk-content"></div>
-        </div>
+        <app-vk-widget></app-vk-widget>
     </mat-drawer>
     <ng-content></ng-content>
 </mat-drawer-container>

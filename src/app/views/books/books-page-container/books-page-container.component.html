@@ -1,0 +1,19 @@
+<div>
+    <header>
+        <mat-grid-list cols="2" rowHeight="45rem" class="books-page">
+            <mat-grid-tile>
+                <ng-container *ngIf="!(isUserLoggedIn|async); then authForm; else bookForm"></ng-container>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="existingBooks | async; let books">
+                <books-table [books]="books" [recommendedBooks]="recommendedBooks|async" class="container"></books-table>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </header>
+</div>
+
+<ng-template #authForm>
+    <auth-form></auth-form>
+</ng-template>
+<ng-template #bookForm>
+    <app-book-form></app-book-form>
+</ng-template>

@@ -1,7 +1,7 @@
 <div class="page">
     <header>
         <mat-grid-list cols="2" rowHeight="55rem" class="books-page">
-            <mat-grid-tile>
+            <mat-grid-tile *ngIf="singleBook|async">
                 <mat-card class="card">
                     <h4>{{name}}</h4>
                     <form #heroForm="ngForm" class="form" (ngSubmit)="onSubmit()">
@@ -9,31 +9,32 @@
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Title</mat-label>
-                                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" (disabled)="!hasPermissions">
+                                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" [disabled]="!(hasPermissions|async)">
                                 </mat-form-field>
                             </div>
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Book description</mat-label>
-                                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" (disabled)="!hasPermissions"></textarea>
+                                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" [disabled]="!(hasPermissions|async)"></textarea>
                                 </mat-form-field>
                             </div>
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Author name</mat-label>
-                                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" (disabled)="!hasPermissions">
+                                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" [disabled]="!(hasPermissions|async)">
                                 </mat-form-field>
                             </div>
 
                         </div>
 
                         <div>
-                            <button mat-raised-button type="submit" *ngIf="hasPermissions">Change</button>
+                            <button mat-raised-button type="submit" *ngIf="hasPermissions|async">Change</button>
                         </div>
                     </form>
                 </mat-card>
             </mat-grid-tile>
-            <mat-grid-tile>
+            <mat-grid-tile >
+                <ng-container *ngIf="pdfSingleBook|async"></ng-container>
                 <mat-card class="card">
                     <div class="pdf-buttons">
                         <button mat-raised-button type="button" (click)="prevPage()"><i class="material-icons" md-36>arrow_back</i></button>

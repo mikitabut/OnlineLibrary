@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { BooksService } from '../books.service';
-import { MatSnackBar } from '@angular/material';
-import { User } from '../../../services/authService';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import * as NotificationActions from '../../../actions/notification.actions';
+import * as UserActions from '../../../actions/user.actions';
 
 @Component({
     selector: 'auth-form',
@@ -9,24 +10,36 @@ import { User } from '../../../services/authService';
     templateUrl: './auth-form.component.html',
 })
 export class AuthFormComponent {
-    @Output() authEmitter: EventEmitter<User> = new EventEmitter<User>();
     public usernameAuth: string;
     public passwordAuth: string;
 
-    constructor(private bookService: BooksService, private snackBar: MatSnackBar) {}
+    constructor(private store: Store<any>) {}
 
-    onSubmitAuth() {
+    onSubmitAuth(isAuth: boolean) {
         if (this.canSignIn()) {
-            this.authEmitter.emit({
-                password: this.passwordAuth,
-                username: this.usernameAuth,
-            } as User);
+            if (isAuth) {
+                this.store.dispatch(
+                    new UserActions.Login({
+                        username: this.usernameAuth,
+                        password: this.passwordAuth,
+                    }),
+                );
+            } else {
+                this.store.dispatch(
+                    new UserActions.Register({
+                        username: this.usernameAuth,
+                        password: this.passwordAuth,
+                    }),
+                );
+            }
         } else {
-            this.snackBar.open('You should set all fields!', 'OK');
+            this.store.dispatch(
+                new NotificationActions.ShowNotification('You should set all fields!!!!--'),
+            );
         }
     }
 
     canSignIn() {
-        return this.usernameAuth && this.passwordAuth;
+        return !!this.usernameAuth && !!this.passwordAuth;
     }
 }

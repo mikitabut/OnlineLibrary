@@ -1,0 +1,7 @@
+<div class="page-container">
+    <div class="spinner-wrapper" *ngIf="isSpinnerVisible|async">
+        <div class="spinner-overlay"></div>
+        <mat-progress-spinner mode="indeterminate" class="spinner"> </mat-progress-spinner>
+    </div>
+    <router-outlet> </router-outlet>
+</div>

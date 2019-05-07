@@ -1,16 +1,19 @@
 import {
     Component,
-    OnInit,
     Input,
     ChangeDetectionStrategy,
-    OnChanges,
-    SimpleChanges,
     ViewChild,
+    ElementRef,
+    OnDestroy,
+    OnInit,
 } from '@angular/core';
-import { DataSource } from '@angular/cdk/table';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
+import { map, debounceTime, filter } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+
+import * as BooksActions from '../../../actions/books.actions';
 import { Book } from '../../../entities/book';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatInput } from '@angular/material';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,51 +21,54 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
     styleUrls: ['./books-table.component.css'],
     templateUrl: './books-table.component.html',
 })
-export class BooksTableComponent implements OnChanges {
+export class BooksTableComponent implements OnDestroy, OnInit {
     @Input() books: Book[];
     @Input() recommendedBooks: Book[];
-    @Input() searchSubject: Subject<{ phrase: string; byWord?: boolean }>;
+    @ViewChild(MatInput) input: MatInput;
+
     wordSearch: boolean = false;
-    dataSource: BooksDataSource;
-    columnsToDisplay = ['bookName', 'authorName', 'description'];
+    columnsToDisplay = [
+        { name: 'name', title: 'Book Name' },
+        { name: 'authorName', title: 'Author Name' },
+        { name: 'description', title: 'Description' },
+    ];
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.books) {
-            this.dataSource.update(this.books);
-        }
-    }
-    constructor() {
-        this.dataSource = new BooksDataSource(this.books || []);
+    searchInputSubscription: Subscription;
+
+    private previousPhrase = '';
+
+    constructor(private store: Store<any>) {}
+
+    ngOnInit(): void {
+        this.searchInputSubscription = this.input.stateChanges
+            .asObservable()
+            .pipe(
+                filter(() => this.input.value !== this.previousPhrase),
+                debounceTime(2000),
+                map(() => this.input.value),
+            )
+            .subscribe((phrase: any) => {
+                this.previousPhrase = phrase;
+                this.store.dispatch(
+                    new BooksActions.FetchFilteredBooks({ phrase, fullWord: this.wordSearch }),
+                );
+            });
     }
 
-    onSearchChange(phrase: string) {
-        if (phrase.length >= 3) {
-            this.searchSubject.next({ phrase, byWord: this.wordSearch });
-        } else {
-            this.searchSubject.next({ phrase: '' });
-        }
+    ngOnDestroy(): void {
+        this.searchInputSubscription.unsubscribe();
+    }
+    getColumnsName() {
+        return this.columnsToDisplay.map(value => value.name);
     }
 
     onToggleChange(checked: boolean) {
         this.wordSearch = checked;
-    }
-}
-export class BooksDataSource extends MatTableDataSource<any> {
-    private subj: BehaviorSubject<Book[]>;
-    constructor(public data: Book[]) {
-        super(data);
-    }
-
-    connect() {
-        this.subj = this.subj || new BehaviorSubject(this.data);
-        return this.subj;
-    }
-
-    disconnect() {
-        this.data = undefined;
-    }
-
-    update(books) {
-        this.connect().next(books);
+        this.store.dispatch(
+            new BooksActions.FetchFilteredBooks({
+                phrase: this.previousPhrase,
+                fullWord: this.wordSearch,
+            }),
+        );
     }
 }

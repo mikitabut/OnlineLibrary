@@ -1,20 +1,37 @@
-<div class="container">
-    <h4>Sign in</h4>
-    <form (ngSubmit)="onSubmitAuth()" id="authForm">
-        <div class="form-group">
-            <p>
-                <mat-form-field>
-                    <mat-label>Username</mat-label>
-                    <input matInput placeholder="Your awesome username" required [(ngModel)]="usernameAuth" name="username">
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <mat-label>Password</mat-label>
-                    <input type="password" matInput placeholder="Cryptonit" required [(ngModel)]="passwordAuth" name="password">
-                </mat-form-field>
-            </p>
-        </div>
-        <button mat-raised-button type="submit" (disabled)="(passwordAuth && usernameAuth)?false:true">Submit</button>
-    </form>
-</div>
+<mat-card class="card">
+    <mat-tab-group>
+        <mat-tab label="Sign In">
+            <ng-container *ngTemplateOutlet="content;
+                context: { isAuth: true}"
+            ></ng-container>
+        </mat-tab>
+        <mat-tab label="Sign Up">
+            <ng-container *ngTemplateOutlet="content;
+                context: { isAuth: false}"
+            ></ng-container>
+        </mat-tab>
+    </mat-tab-group>
+
+</mat-card>
+
+<ng-template #content let-isAuth="isAuth">
+    <div class="container">
+        <form (ngSubmit)="onSubmitAuth(isAuth)" id="authForm">
+            <div class="form-group">
+                <p>
+                    <mat-form-field>
+                        <mat-label>Username</mat-label>
+                        <input matInput placeholder="Place username here" required [(ngModel)]="usernameAuth" name="username">
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input type="password" matInput placeholder="Place password here" required [(ngModel)]="passwordAuth" name="password">
+                    </mat-form-field>
+                </p>
+            </div>
+            <button mat-raised-button type="submit" [disabled]="!(passwordAuth && usernameAuth)">Submit</button>
+        </form>
+    </div>
+</ng-template>

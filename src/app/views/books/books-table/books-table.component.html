@@ -1,34 +1,32 @@
-<div>
+<mat-card class="card">
     <div>
         <div>
-            <div *ngIf="recommendedBooks">Recommended Books: </div>
-            <div *ngFor="let recBook of recommendedBooks">
-                <a  [href]="recBook.name">{{recBook.name}}</a>
+            <div>
+                <div *ngIf="recommendedBooks">Recommended Books: </div>
+                <div *ngFor="let recBook of recommendedBooks">
+                    <a [href]="recBook.name">{{recBook.name}}</a>
+                </div>
             </div>
+            <mat-slide-toggle color="primary" class="toggle" (input)="onToggleChange($event.target.checked)">Word search</mat-slide-toggle>
+            <mat-form-field>
+                <mat-label>Search book</mat-label>
+                <input matInput placeholder="Search passphrase" required name="searchPhrase">
+            </mat-form-field>
         </div>
-        <mat-slide-toggle color="primary" class="toggle" (input)="onToggleChange($event.target.checked)">Word search</mat-slide-toggle>
-        <mat-form-field>
-            <mat-label>Search book</mat-label>
-            <input matInput placeholder="Search passphrase" required name="searchPhrase" (input)="onSearchChange($event.target.value)">
-        </mat-form-field>
-    </div>
 
-    <div class="table">
-        <mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="bookName">
-                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                <mat-cell *matCellDef="let book"><a [routerLink]="[book.name]">{{book.name}}</a> </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="authorName">
-                <mat-header-cell *matHeaderCellDef> Author name </mat-header-cell>
-                <mat-cell *matCellDef="let book"> {{book.authorName}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="description">
-                <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-                <mat-cell *matCellDef="let book"> {{book.description}} </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let books; columns: columnsToDisplay"></mat-row>
-        </mat-table>
+        <div class="table">
+            <table mat-table #table [dataSource]="books">
+
+                <ng-container *ngFor="let columnConfig of columnsToDisplay">
+                    <ng-container matColumnDef="{{columnConfig.name}}" [sticky]="false">
+                        <th mat-header-cell *matHeaderCellDef>{{columnConfig.title}}</th>
+                        <td mat-cell *matCellDef="let row"> {{row[columnConfig.name]}} </td>
+                    </ng-container>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="getColumnsName()"></tr>
+                <tr mat-row *matRowDef="let myRowData; columns: getColumnsName();"></tr>
+            </table>
+        </div>
+
     </div>
-</div>
+</mat-card>

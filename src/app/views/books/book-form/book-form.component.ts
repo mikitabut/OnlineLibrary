@@ -1,9 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Book } from '../../../entities/book';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BooksService } from '../books.service';
-import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import * as NotificationActions from '../../../actions/notification.actions';
+import * as BooksActions from '../../../actions/books.actions';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.Default,
@@ -12,15 +11,12 @@ import { Observable } from 'rxjs';
     templateUrl: './book-form.component.html',
 })
 export class BookFormComponent {
-    @Output() booksEmitter: EventEmitter<Book> = new EventEmitter<Book>();
-
-    private userGroup: number;
     public name: string;
     public authorName: string;
     public simplePart: string;
     public file: File;
 
-    constructor(private bookService: BooksService, private snackBar: MatSnackBar) {}
+    constructor(private store: Store<any>) {}
 
     onFileChange(event) {
         const files: FileList = event.target.files;
@@ -31,21 +27,19 @@ export class BookFormComponent {
 
     onSubmit() {
         if (this.canSubmitted()) {
-            this.booksEmitter.emit(
-                new Book({
+            this.store.dispatch(
+                new BooksActions.AddNewBook({
                     authorName: this.authorName,
                     description: this.simplePart,
                     file: this.file,
-                    id: 0,
+                    id: '0',
                     name: this.name,
                 }),
             );
-            this.authorName = '';
-            this.simplePart = '';
-            this.file = undefined;
-            this.name = '';
         } else {
-            this.snackBar.open('You shoul set all fields!', 'OK');
+            this.store.dispatch(
+                new NotificationActions.ShowNotification('You should set all fields!!!!--'),
+            );
         }
     }
 

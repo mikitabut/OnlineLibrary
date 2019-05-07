@@ -6,6 +6,10 @@
     max-height: 25rem;
 }
 
+.table th {
+    text-align: center;
+}
+
 .toggle {
     padding-right: 3rem;
 }
