@@ -1,11 +1,11 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
-import { Book } from '../../../entities/book';
-import * as UserActions from '../../../actions/user.actions';
-import { getUsername, getIsUserLoggedIn } from '../../../reducers/user.reducers';
-import { getManagedBooks } from '../../../reducers/books.reducers';
+import { Book } from '../../../../entities/book';
+import * as UserActions from '../../../../actions/user.actions';
+import { getUsername, getIsUserLoggedIn } from '../../../../reducers/user.reducers';
+import { getManagedBooks } from '../../../../reducers/books.reducers';
 
 @Component({
     selector: 'header',

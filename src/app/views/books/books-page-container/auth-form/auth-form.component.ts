@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as NotificationActions from '../../../actions/notification.actions';
-import * as UserActions from '../../../actions/user.actions';
+import * as NotificationActions from '../../../../actions/notification.actions';
+import * as UserActions from '../../../../actions/user.actions';
 
 @Component({
     selector: 'auth-form',

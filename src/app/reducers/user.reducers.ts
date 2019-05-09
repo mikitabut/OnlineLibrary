@@ -21,6 +21,8 @@ export function reducer(state = initialState, { type, payload }: userActions.Act
     switch (type) {
         case userActions.SET_USER_DATA:
             return { ...state, ...payload };
+        case userActions.SET_TOKEN:
+            return { ...state, token: payload };
         case userActions.LOGOUT:
             return initialState;
         default:
@@ -38,11 +40,7 @@ export const getUsername = createSelector(
 );
 export const getIsUserLoggedIn = createSelector(
     getUser,
-    (state: UserState) => !!state.username,
-);
-export const getUsertoken = createSelector(
-    getUser,
-    (state: UserState) => state.token,
+    (state: UserState) => !!state.token,
 );
 export const getUserVkId = createSelector(
     getUser,

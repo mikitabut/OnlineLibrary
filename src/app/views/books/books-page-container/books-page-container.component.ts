@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
 
 import { Book } from '../../../entities/book';
+import * as UserActions from '../../../actions/user.actions';
 import * as BooksActions from '../../../actions/books.actions';
 import { getIsUserLoggedIn } from '../../../reducers/user.reducers';
 import { getExistingBooks, getRecommendedBooks } from '../../../reducers/books.reducers';
@@ -25,6 +25,7 @@ export class BooksPageContainerComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.store.dispatch(new UserActions.GetProfile(null));
         this.store.dispatch(new BooksActions.FetchExistingBooks(null));
     }
 }

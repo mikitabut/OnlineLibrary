@@ -9,26 +9,26 @@
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Title</mat-label>
-                                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" [disabled]="!(hasPermissions|async)">
+                                    <input matInput placeholder="Name of your great book!" required [(ngModel)]="name" name="title" [disabled]="!hasPermissions">
                                 </mat-form-field>
                             </div>
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Book description</mat-label>
-                                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" [disabled]="!(hasPermissions|async)"></textarea>
+                                    <textarea matInput placeholder="Description what you want!" required [(ngModel)]="simplePart" name="description" [disabled]="!hasPermissions"></textarea>
                                 </mat-form-field>
                             </div>
                             <div>
                                 <mat-form-field class="input">
                                     <mat-label>Author name</mat-label>
-                                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" [disabled]="!(hasPermissions|async)">
+                                    <input matInput placeholder="Author of this awesome book!" required [(ngModel)]="authorName" name="authorName" [disabled]="!hasPermissions">
                                 </mat-form-field>
                             </div>
 
                         </div>
 
                         <div>
-                            <button mat-raised-button type="submit" *ngIf="hasPermissions|async">Change</button>
+                            <button mat-raised-button type="submit" *ngIf="hasPermissions">Change</button>
                         </div>
                     </form>
                 </mat-card>

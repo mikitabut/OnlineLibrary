@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, finalize, filter } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
+import { map, switchMap, tap, finalize } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import * as BooksActions from '../actions/books.actions';
 import * as NotificationActions from '../actions/notification.actions';
 import * as UiActions from '../actions/ui.actions';
 import { BooksService } from '../views/books/books.service';
-import { getUsertoken, getUsername } from '../reducers/user.reducers';
 import { Book } from '../entities/book';
 
 @Injectable()
@@ -19,26 +18,27 @@ export class BooksEffects {
         private store: Store<any>,
     ) {}
 
-    @Effect()
+    @Effect({ dispatch: false })
     addNewBook$ = this.actions$.pipe(
         ofType<BooksActions.AddNewBook>(BooksActions.ADD_NEW_BOOK),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) => {
-            return this.store.pipe(
-                select(getUsertoken),
-                switchMap((userToken: string) => this.booksService.newBook(payload, userToken)),
-                map((obj: any) => {
-                    const books = obj.data;
-                    return books.map(
+            return this.booksService.newBook(payload).pipe(
+                map((books: any) =>
+                    books.map(
                         backendBook => new Book({ ...backendBook.book, id: backendBook._id }),
-                    );
-                }),
+                    ),
+                ),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             );
         }),
-        map((books: Book[]) => new BooksActions.UpdateExistingBooks(books)),
-        tap(() => new NotificationActions.ShowNotification('Book was inserted successfully')),
-        tap(() => new BooksActions.FetchRecommendedBooks(null)),
+        tap((books: Book[]) => this.store.dispatch(new BooksActions.UpdateExistingBooks(books))),
+        tap(() =>
+            this.store.dispatch(
+                new NotificationActions.ShowNotification('Book was inserted successfully'),
+            ),
+        ),
+        tap(() => this.store.dispatch(new BooksActions.FetchRecommendedBooks(null))),
     );
 
     @Effect()
@@ -46,15 +46,8 @@ export class BooksEffects {
         ofType<BooksActions.EditSingleBookByName>(BooksActions.EDIT_SINGLE_BOOK_BY_NAME),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) => {
-            return this.store.pipe(
-                select(getUsertoken),
-                switchMap((userToken: string) =>
-                    this.booksService.updateBookByName(payload.bookName, payload.book, userToken),
-                ),
-                map((response: any) => {
-                    const books = response.data;
-                    return books.map(book => new Book({ ...book.book, id: book._id })).pop();
-                }),
+            return this.booksService.updateBookByName(payload.bookName, payload.book).pipe(
+                map((book: any) => new Book(book)),
                 finalize(() => {
                     this.store.dispatch(
                         new NotificationActions.ShowNotification('Book was changed successfully'),
@@ -76,12 +69,7 @@ export class BooksEffects {
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(() =>
             this.booksService.getBooks().pipe(
-                map((obj: any) => {
-                    const books = obj.data;
-                    return books.map(
-                        backendBook => new Book({ ...backendBook.book, id: backendBook._id }),
-                    );
-                }),
+                map((books: any) => books.map(book => new Book({ ...book.book, id: book._id }))),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             ),
         ),
@@ -100,41 +88,24 @@ export class BooksEffects {
                 : this.booksService.searchBooksStartWord(payload.phrase.trim());
 
             return resultedBooks$.pipe(
-                map((obj: any) => {
-                    const books = obj.data;
-                    return books.map(
-                        backendBook => new Book({ ...backendBook, id: backendBook._id }),
-                    );
-                }),
+                map((books: any) => books.map(book => new Book({ ...book.book, id: book._id }))),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             );
         }),
         map((books: Book[]) => new BooksActions.UpdateExistingBooks(books)),
     );
 
-    @Effect({ dispatch: false })
+    @Effect()
     fetchRecommendedBooks$ = this.actions$.pipe(
         ofType<BooksActions.FetchRecommendedBooks>(BooksActions.FETCH_RECOMMENDED_BOOKS),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(() =>
-            combineLatest(
-                this.store.pipe(select(getUsertoken)),
-                this.store.pipe(select(getUsername)),
-            ),
-        ),
-        filter(([userToken, username]) => !!userToken && !!username),
-        switchMap(([userToken, username]) =>
-            this.booksService.getRecommendedBooks(username, userToken).pipe(
-                map((obj: any) => {
-                    const books = obj.books;
-                    return books.map(
-                        backendBook => new Book({ ...backendBook.book, id: backendBook._id }),
-                    );
-                }),
+            this.booksService.getRecommendedBooks().pipe(
+                map((books: any) => books.map(book => new Book({ ...book.book, id: book._id }))),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             ),
         ),
-        map((books: Book[]) => this.store.dispatch(new BooksActions.UpdateRecommendedBooks(books))),
+        map((books: Book[]) => new BooksActions.UpdateRecommendedBooks(books)),
     );
 
     @Effect()
@@ -142,20 +113,8 @@ export class BooksEffects {
         ofType<BooksActions.FetchManagedBooks>(BooksActions.FETCH_MANAGED_BOOKS),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(() =>
-            combineLatest(
-                this.store.pipe(select(getUsertoken)),
-                this.store.pipe(select(getUsername)),
-            ),
-        ),
-        filter(([userToken, username]) => !!userToken && !!username),
-        switchMap(([userToken, username]) =>
-            this.booksService.getBooksByUsername(username, userToken).pipe(
-                map((obj: any) => {
-                    const books = obj.data.userBooks;
-                    return books.map(
-                        backendBook => new Book({ ...backendBook.book, id: backendBook._id }),
-                    );
-                }),
+            this.booksService.getManagedBooks().pipe(
+                map((books: any) => books.map(book => new Book({ ...book.book, id: book._id }))),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             ),
         ),
@@ -168,10 +127,9 @@ export class BooksEffects {
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) =>
             this.booksService.getBookByName(payload).pipe(
-                map((obj: any) => {
-                    const books = obj.data;
-                    return books && books[0] && new Book({ ...books[0].book, id: books[0]._id });
-                }),
+                map((books: any) =>
+                    books.map(book => new Book({ ...book.book, id: book._id })).pop(),
+                ),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
             ),
         ),

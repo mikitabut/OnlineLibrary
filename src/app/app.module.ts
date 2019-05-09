@@ -9,14 +9,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppComponent } from './app.component';
 
 import { BooksModule } from './views/books/books.module';
-import { VkAuthComponent } from './views/vk-auth/vk-auth.component';
 import { reducers, metaReducers } from './reducers';
 import { environment } from '../environments/environment';
 import { BookEffects } from './effects';
 
 @NgModule({
     bootstrap: [AppComponent],
-    declarations: [AppComponent, VkAuthComponent],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         NgbModule,

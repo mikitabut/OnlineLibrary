@@ -16,32 +16,31 @@ type BooksResponse = {
 export class BooksService {
     constructor(private http: HttpClient) {}
 
-    // Updated
+    // Get all books
     public getBooks() {
         return this.http.get(API_URL + '/books');
     }
-    // TODO: UserToken optional for now 06/05/2019
-    // Updated
-    public getRecommendedBooks(username: string, userToken) {
-        return this.http.post(API_URL + '/books/recommended', { username });
+
+    // If token is presented in header we get personal recommendations, otherwise common
+    public getRecommendedBooks() {
+        return this.http.get(API_URL + '/books/recommended');
     }
 
+    // Get specified book
     public getBookByName(name: string) {
         return this.http.get(API_URL + '/books/' + name);
     }
-    // Updated
+    // Search book by full word
     public searchBooksFullWord(value) {
         return this.http.get(API_URL + '/books/searchFullWord/' + value);
     }
-    // Updated
+    // Search book by path word
     public searchBooksStartWord(value) {
         return this.http.get(API_URL + '/books/searchStartWord/' + value);
     }
 
-    public updateBookByName(name: string, book: Book, token: string) {
+    public updateBookByName(name: string, book: Book) {
         let headers = new HttpHeaders();
-        headers = headers.append('Accept', 'application/json');
-        headers = headers.append('Authorization', token);
         headers = headers.append('enctype', 'multipart/form-data');
         const options = { headers };
 
@@ -54,10 +53,8 @@ export class BooksService {
     }
 
     // Updated
-    public newBook(book: Book, token: string) {
+    public newBook(book: Book) {
         let headers = new HttpHeaders();
-        headers = headers.append('Accept', 'application/json');
-        headers = headers.append('Authorization', token);
         headers = headers.append('enctype', 'multipart/form-data');
         const options = { headers };
 
@@ -66,17 +63,12 @@ export class BooksService {
         formData.append('name', book.name.trim());
         formData.append('authorName', book.authorName.trim());
         formData.append('description', book.description.trim());
-        /** In Angular 5, including the header Content-Type can invalidate your request */
         return this.http.post(API_URL + '/books/add', formData, options);
     }
 
     // Updated
-    public getBooksByUsername(username, token) {
-        let headers = new HttpHeaders();
-        headers = headers.append('Accept', 'application/json');
-        headers = headers.append('Authorization', token);
-        const options = { headers };
-        return this.http.get(API_URL + '/books/user/' + username, options);
+    public getManagedBooks() {
+        return this.http.get(API_URL + '/books/user/');
     }
 
     public getPdf(idOfBook: string) {

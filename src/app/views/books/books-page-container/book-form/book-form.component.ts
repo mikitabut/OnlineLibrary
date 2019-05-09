@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as NotificationActions from '../../../actions/notification.actions';
-import * as BooksActions from '../../../actions/books.actions';
+import * as NotificationActions from '../../../../actions/notification.actions';
+import * as BooksActions from '../../../../actions/books.actions';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.Default,
@@ -36,6 +36,10 @@ export class BookFormComponent {
                     name: this.name,
                 }),
             );
+            this.authorName = '';
+            this.simplePart = '';
+            this.file = undefined;
+            this.name = '';
         } else {
             this.store.dispatch(
                 new NotificationActions.ShowNotification('You should set all fields!!!!--'),

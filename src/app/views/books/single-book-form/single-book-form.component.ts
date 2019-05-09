@@ -3,18 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Book } from '../../../entities/book';
-import { BooksService } from '../books.service';
-import { AuthenticationService } from '../../../services/authService';
 import * as NotificationActions from '../../../actions/notification.actions';
+import * as UserActions from '../../../actions/user.actions';
 import * as BooksActions from '../../../actions/books.actions';
 import {
-    getManagedBooks,
     getHasManagedBookByName,
     getSingleBook,
     getPdfSingleBook,
 } from '../../../reducers/books.reducers';
-import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'single-book-form',
@@ -24,7 +22,7 @@ import { switchMap, map } from 'rxjs/operators';
 export class SingleBookFormComponent implements OnInit {
     viewport: any;
     context: any;
-    hasPermissions: Observable<boolean>;
+    hasPermissions: Subscription;
     pageBookName: string;
     @Output() booksEmitter: EventEmitter<Book> = new EventEmitter<Book>();
     @ViewChild('canvasPdf') canvasPdf: ElementRef;
@@ -39,12 +37,7 @@ export class SingleBookFormComponent implements OnInit {
     singleBook: Observable<any>;
     pdfSingleBook: Observable<Book>;
 
-    constructor(
-        private bookService: BooksService,
-        private authService: AuthenticationService,
-        private activateRoute: ActivatedRoute,
-        private store: Store<any>,
-    ) {
+    constructor(private activateRoute: ActivatedRoute, private store: Store<any>) {
         this.singleBook = this.store.pipe(select(getSingleBook)).pipe(
             map(book => {
                 if (book) {
@@ -67,14 +60,23 @@ export class SingleBookFormComponent implements OnInit {
                 return pdf;
             }),
         );
-        this.hasPermissions = this.store.pipe(select(getHasManagedBookByName, this.pageBookName));
+        this.hasPermissions = this.activateRoute.params
+            .pipe(
+                map(params => {
+                    this.pageBookName = decodeURI(params['name']);
+                    this.store.dispatch(new BooksActions.FetchSingleBook(this.pageBookName));
+                    return this.pageBookName;
+                }),
+                switchMap(pageBookName =>
+                    this.store.pipe(select(getHasManagedBookByName, pageBookName)),
+                ),
+            )
+            .subscribe();
     }
 
     ngOnInit() {
-        this.activateRoute.params.subscribe(params => {
-            this.pageBookName = params['name'];
-            this.store.dispatch(new BooksActions.FetchSingleBook(this.pageBookName));
-        });
+        this.store.dispatch(new UserActions.GetProfile(null));
+        this.store.dispatch(new BooksActions.FetchManagedBooks(null));
     }
 
     canSubmitted(): any {
@@ -95,36 +97,6 @@ export class SingleBookFormComponent implements OnInit {
                     }),
                 }),
             );
-            // this.bookService
-            //     .updateBookByName(
-            //         this.pageBookName,
-            //         new Book({
-            //             authorName: this.authorName,
-            //             description: this.simplePart,
-            //             file: undefined,
-            //             id: this.id,
-            //             name: this.name,
-            //         }),
-            //         this.authService.token,
-            //     )
-            //     .subscribe(
-            //         book => {
-            //             this.name = book.name;
-            //             this.authorName = book.authorName;
-            //             this.simplePart = book.description;
-            //             this.store.dispatch(
-            //                 new NotificationActions.ShowNotification(
-            //                     'Book was changed successfully',
-            //                 ),
-            //             );
-            //         },
-            //         error =>
-            //             this.store.dispatch(
-            //                 new NotificationActions.ShowNotification(
-            //                     error.status + ':' + error.data,
-            //                 ),
-            //             ),
-            //     );
         } else {
             this.store.dispatch(
                 new NotificationActions.ShowNotification('You should set all fields!'),

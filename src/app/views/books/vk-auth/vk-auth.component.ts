@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import * as UserActions from '../../actions/user.actions';
+import * as UserActions from '../../../actions/user.actions';
 
 @Component({
     selector: 'app-vk-auth',

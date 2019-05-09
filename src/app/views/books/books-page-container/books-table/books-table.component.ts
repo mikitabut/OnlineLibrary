@@ -3,16 +3,15 @@ import {
     Input,
     ChangeDetectionStrategy,
     ViewChild,
-    ElementRef,
     OnDestroy,
     OnInit,
 } from '@angular/core';
-import { fromEvent, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map, debounceTime, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import * as BooksActions from '../../../actions/books.actions';
-import { Book } from '../../../entities/book';
+import * as BooksActions from '../../../../actions/books.actions';
+import { Book } from '../../../../entities/book';
 import { MatInput } from '@angular/material';
 
 @Component({
@@ -28,7 +27,7 @@ export class BooksTableComponent implements OnDestroy, OnInit {
 
     wordSearch: boolean = false;
     columnsToDisplay = [
-        { name: 'name', title: 'Book Name' },
+        { name: 'name', title: 'Book Name', linkable: true },
         { name: 'authorName', title: 'Author Name' },
         { name: 'description', title: 'Description' },
     ];
@@ -49,9 +48,13 @@ export class BooksTableComponent implements OnDestroy, OnInit {
             )
             .subscribe((phrase: any) => {
                 this.previousPhrase = phrase;
-                this.store.dispatch(
-                    new BooksActions.FetchFilteredBooks({ phrase, fullWord: this.wordSearch }),
-                );
+                if (phrase && phrase.length) {
+                    this.store.dispatch(
+                        new BooksActions.FetchFilteredBooks({ phrase, fullWord: this.wordSearch }),
+                    );
+                } else {
+                    this.store.dispatch(new BooksActions.FetchExistingBooks(null));
+                }
             });
     }
 

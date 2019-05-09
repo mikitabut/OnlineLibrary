@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, finalize } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { map, switchMap, tap, finalize, delay } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import * as UiActions from '../actions/ui.actions';
 import * as BooksActions from '../actions/books.actions';
 import * as UserActions from '../actions/user.actions';
 import * as NotificationActions from '../actions/notification.actions';
 import { AuthenticationService } from '../services/authService';
-import { of, combineLatest } from 'rxjs';
-import { getUsername, getUsertoken } from '../reducers/user.reducers';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class UserEffects {
@@ -17,41 +16,63 @@ export class UserEffects {
         private actions$: Actions,
         private authService: AuthenticationService,
         private store: Store<any>,
+        @Inject(DOCUMENT) private document: Document,
     ) {}
 
-    @Effect({ dispatch: false })
+    @Effect()
+    getProfile$ = this.actions$.pipe(
+        ofType<UserActions.GetProfile>(UserActions.GET_PROFILE),
+        tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
+        switchMap(() => {
+            return this.authService.getProfile().pipe(
+                map((user: any) => {
+                    this.store.dispatch(new UserActions.SetUserData(user));
+                    return user.username;
+                }),
+                finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
+                map(
+                    (username: string) =>
+                        new NotificationActions.ShowNotification(`Hello ${username}!`),
+                ),
+                tap(() => this.store.dispatch(new BooksActions.FetchManagedBooks(null))),
+                map(() => new BooksActions.FetchRecommendedBooks(null)),
+            );
+        }),
+    );
+    @Effect()
     login$ = this.actions$.pipe(
         ofType<UserActions.Login>(UserActions.LOGIN),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) => {
             return this.authService.login(payload.username.trim(), payload.password.trim()).pipe(
-                map((obj: any) => obj.data),
-                map(({ jwtToken: token, userVkId }) => {
-                    this.store.dispatch(
-                        new UserActions.SetUserData({
-                            token,
-                            userVkId,
-                            username: payload.username,
-                        }),
-                    );
-                    return payload.username;
+                map((user: any) => {
+                    this.store.dispatch(new UserActions.SetUserData(user));
+                    return user.username;
                 }),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
-                map((username: string) =>
-                    this.store.dispatch(
+                map(
+                    (username: string) =>
                         new NotificationActions.ShowNotification(`Hello ${username}!`),
-                    ),
                 ),
-                map(() => this.store.dispatch(new BooksActions.FetchManagedBooks(null))),
-                map(() => this.store.dispatch(new BooksActions.FetchRecommendedBooks(null))),
+                tap(() => this.store.dispatch(new BooksActions.FetchManagedBooks(null))),
+                tap(() => new BooksActions.FetchRecommendedBooks(null)),
             );
         }),
     );
     @Effect({ dispatch: false })
     logout$ = this.actions$.pipe(
         ofType<UserActions.Logout>(UserActions.LOGOUT),
+        tap(() => this.authService.logout()),
         tap(() => this.store.dispatch(new BooksActions.ClearManagedBooks(null))),
         tap(() => this.store.dispatch(new BooksActions.ClearRecommendedBooks(null))),
+    );
+    @Effect({ dispatch: false })
+    setToken$ = this.actions$.pipe(
+        ofType<UserActions.SetToken>(UserActions.SET_TOKEN),
+        map(({ payload }) => {
+            localStorage.setItem('x-jwt', payload);
+            return payload;
+        }),
     );
 
     @Effect()
@@ -60,17 +81,9 @@ export class UserEffects {
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) => {
             return this.authService.register(payload.username.trim(), payload.password.trim()).pipe(
-                map((obj: any) => obj.data),
-                map(
-                    ({ jwtToken: token, userVkId }) =>
-                        new UserActions.SetUserData({
-                            token,
-                            userVkId,
-                            username: payload.username,
-                        }),
-                ),
+                map((user: any) => new UserActions.SetUserData(user)),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
-                tap(() => new NotificationActions.ShowNotification('User successfully created')),
+                map(() => new NotificationActions.ShowNotification('User successfully created')),
             );
         }),
     );
@@ -79,28 +92,18 @@ export class UserEffects {
         ofType<UserActions.UpdateUserVkId>(UserActions.UPDATE_USER_VK_ID),
         tap(() => this.store.dispatch(new UiActions.ShowSpinner(null))),
         switchMap(({ payload }) =>
-            combineLatest(
-                of(payload),
-                this.store.pipe(select(getUsername)),
-                this.store.pipe(select(getUsertoken)),
-            ),
-        ),
-        switchMap(([userVkId, username, token]) =>
-            this.authService.updateUserVkId(userVkId, username).pipe(
-                map((obj: any) => obj.data),
-                map(
-                    () =>
-                        new UserActions.SetUserData({
-                            token,
-                            userVkId,
-                            username,
-                        }),
-                ),
+            this.authService.updateUserVkId(payload).pipe(
+                map((data: any) => new UserActions.SetUserData(data)),
                 finalize(() => this.store.dispatch(new UiActions.HideSpinner(null))),
-                tap(
-                    () =>
-                        new NotificationActions.ShowNotification('User vk id successfully updated'),
+                tap(() =>
+                    this.store.dispatch(
+                        new NotificationActions.ShowNotification(
+                            'User vk id successfully updated. You will be redirected to main page...',
+                        ),
+                    ),
                 ),
+                delay(3000),
+                tap(() => (this.document.location.href = '/')),
             ),
         ),
     );

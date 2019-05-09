@@ -1,4 +1,5 @@
 export enum ErrorCode {
-    NotAuthorized = 401,
+    Unlogged = 401,
+    NotAuthorized = 403,
     ApplicationError = 500,
 }
